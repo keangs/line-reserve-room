@@ -47,6 +47,10 @@
     </v-sheet>
     <v-sheet height="600">
       <v-calendar
+        v-touch="{
+          left: () => next(),
+          right: () => prev()
+        }"
         ref="calendar"
         v-model="focus"
         color="primary"
@@ -156,26 +160,30 @@ import * as general from "@/js/general.js";
 import Swal from "sweetalert2";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
-import vConsole from "@/js/vconsole.min.js";
+// import vConsole from "@/js/vconsole.min.js";
 
-new vConsole();
+// new vConsole();
 
 let liff;
 firebase.initializeApp({
-  apiKey: "AIzaSyAziOgMG_QzcoStHu8eBV8BjD_W1Kaur1o",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "reservelinebot.firebaseapp.com",
   databaseURL:
     "https://reservelinebot-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "reservelinebot",
   storageBucket: "reservelinebot.appspot.com",
-  messagingSenderId: "1031269586313",
-  appId: "1:1031269586313:web:8610e060555a781d44fd58"
+  messagingSenderId: process.env.FIREBASE_MSG_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID
 });
 export const db = firebase.database();
 var reserveRef = db.ref("/reserve");
 
 export default {
   data: () => ({
+    profile: {
+      userId: "test",
+      displayName: "test"
+    },
     isMounted: false,
     dialogDate: false,
     cancelReserve: false,
@@ -216,15 +224,15 @@ export default {
     ]
   }),
   computed: {},
-  beforeCreate() {
+  async beforeCreate() {
     liff = this.$liff;
-
     liff.ready.then(async () => {
       if (!liff.isLoggedIn()) {
         await liff.login();
       }
     });
-    liff.init({ liffId: "1656372478-zn7jK4op" });
+    liff.init({ liffId: process.env.LIFF_ID });
+    this.profile = await liff.getProfile();
   },
   mounted() {
     this.isMounted = true;
@@ -423,11 +431,9 @@ export default {
           break;
       }
 
-      const profile = await liff.getProfile();
-
       reserveRef.push({
-        userId: profile.userId,
-        userName: profile.displayName,
+        userId: this.profile.userId,
+        userName: this.profile.displayName,
         room: this.room,
         name: room,
         start: general.convertToTimestamp(start),
@@ -462,6 +468,7 @@ export default {
       this.focus = "";
     },
     prev() {
+      console.log("prev");
       this.$refs.calendar.prev();
     },
     next() {
@@ -483,8 +490,7 @@ export default {
         open();
       }
       this.cancelReserve = false;
-      const profile = await liff.getProfile();
-      if (event.userId == profile.userId) {
+      if (event.userId == this.profile.userId) {
         this.cancelReserve = true;
       }
 

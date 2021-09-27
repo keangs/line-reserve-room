@@ -231,7 +231,7 @@ export default {
         await liff.login();
       }
     });
-    liff.init({ liffId: "process.env.LIFF_ID" });
+    liff.init({ liffId: process.env.LIFF_ID });
     this.profile = await liff.getProfile();
   },
   mounted() {

@@ -166,14 +166,14 @@ import "firebase/compat/database";
 
 let liff;
 firebase.initializeApp({
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "reservelinebot.firebaseapp.com",
   databaseURL:
     "https://reservelinebot-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "reservelinebot",
   storageBucket: "reservelinebot.appspot.com",
-  messagingSenderId: process.env.FIREBASE_MSG_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MSG_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID
 });
 export const db = firebase.database();
 var reserveRef = db.ref("/reserve");
@@ -231,7 +231,7 @@ export default {
         await liff.login();
       }
     });
-    liff.init({ liffId: process.env.LIFF_ID });
+    liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.profile = await liff.getProfile();
   },
   mounted() {
@@ -468,7 +468,6 @@ export default {
       this.focus = "";
     },
     prev() {
-      console.log("prev");
       this.$refs.calendar.prev();
     },
     next() {

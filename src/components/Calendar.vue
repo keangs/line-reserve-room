@@ -483,13 +483,8 @@ export default {
         open();
       }
       this.cancelReserve = false;
-
-      if (liff.isInClient()) {
-        const profile = await liff.getProfile();
-        if (event.userId == profile.userId) {
-          this.cancelReserve = true;
-        }
-      } else {
+      const profile = await liff.getProfile();
+      if (event.userId == profile.userId) {
         this.cancelReserve = true;
       }
 

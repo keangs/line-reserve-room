@@ -225,14 +225,14 @@ export default {
   }),
   computed: {},
   async beforeCreate() {
-    liff = this.$liff;
-    liff.ready.then(async () => {
-      if (!liff.isLoggedIn()) {
-        await liff.login();
-      }
-    });
-    liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    this.profile = await liff.getProfile();
+    // liff = this.$liff;
+    // liff.ready.then(async () => {
+    //   if (!liff.isLoggedIn()) {
+    //     await liff.login();
+    //   }
+    // });
+    // liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    // this.profile = await liff.getProfile();
   },
   mounted() {
     this.isMounted = true;
@@ -242,7 +242,7 @@ export default {
   },
   methods: {
     roomName(room) {
-      switch (this.room) {
+      switch (room) {
         case 0:
           return {
             name: "Room A",

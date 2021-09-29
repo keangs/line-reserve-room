@@ -23,9 +23,13 @@ export default {
     //
   }),
   mounted() {
-    console.log(window.location);
-    let params = getURLParams(window.location.href);
-    console.log(params);
+    const queryString = decodeURIComponent(window.location.search).replace(
+      "?liff.state=",
+      ""
+    );
+    const params = new URLSearchParams(queryString);
+    const action = params.get("action");
+    console.log("action", action);
   }
 };
 </script>

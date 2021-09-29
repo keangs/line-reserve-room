@@ -23,11 +23,14 @@ export default {
     //
   }),
   mounted() {
+    console.log(window.location.search);
     const queryString = decodeURIComponent(window.location.search).replace(
       "?liff.state=",
       ""
     );
+    console.log(queryString);
     const params = new URLSearchParams(queryString);
+    console.log(params);
     const action = params.get("action");
     console.log("action", action);
   }

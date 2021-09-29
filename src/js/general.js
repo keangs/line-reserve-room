@@ -1,3 +1,16 @@
+export function getURLParams(href) {
+    let uri = href.split("?");
+    if (uri.length == 2) {
+        let vars = uri[1].split("&");
+        let getVars = {};
+        let tmp = "";
+        vars.forEach(function (v) {
+            tmp = v.split("=");
+            if (tmp.length == 2) getVars[tmp[0]] = tmp[1];
+        });
+        return getVars
+    }
+}
 export function getThaiMonth(month) {
     if (Number(month) < 1 && Number(month) > 12) return ""
     var monthNamesThai = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",

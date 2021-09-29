@@ -10,6 +10,7 @@
 <script>
 // import Reserve from "./components/Reserve";
 import Calendar from "./components/Calendar";
+import { getURLParams } from "@/js/general.js";
 
 export default {
   name: "App",
@@ -18,10 +19,14 @@ export default {
     // Reserve,
     Calendar
   },
-
   data: () => ({
     //
-  })
+  }),
+  mounted() {
+    console.log(window.location);
+    let params = getURLParams(window.location.href);
+    console.log(params);
+  }
 };
 </script>
 

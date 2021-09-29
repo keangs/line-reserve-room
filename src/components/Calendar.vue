@@ -225,14 +225,14 @@ export default {
   }),
   computed: {},
   async beforeCreate() {
-    liff = this.$liff;
-    liff.ready.then(async () => {
-      if (!liff.isLoggedIn()) {
-        await liff.login();
-      }
-    });
-    liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    this.profile = await liff.getProfile();
+    // liff = this.$liff;
+    // liff.ready.then(async () => {
+    //   if (!liff.isLoggedIn()) {
+    //     await liff.login();
+    //   }
+    // });
+    // liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    // this.profile = await liff.getProfile();
   },
   mounted() {
     this.isMounted = true;
@@ -241,6 +241,25 @@ export default {
     this.getEvent();
   },
   methods: {
+    roomName(room) {
+      switch (room) {
+        case 0:
+          return {
+            name: "Room A",
+            color: "red"
+          };
+        case 1:
+          return {
+            name: "Room B",
+            color: "blue"
+          };
+        case 2:
+          return {
+            name: "Room C",
+            color: "green"
+          };
+      }
+    },
     async sendMsg(text) {
       if (liff.getContext().type !== "none") {
         await liff.sendMessages([
@@ -414,31 +433,16 @@ export default {
         general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
         this.timeEnd
       );
-      let room = "";
-      let color = "";
-      switch (this.room) {
-        case 0:
-          room = "Room A";
-          color = "red";
-          break;
-        case 1:
-          room = "Room B";
-          color = "blue";
-          break;
-        case 2:
-          room = "Room C";
-          color = "green";
-          break;
-      }
 
+      let room = this.roomName(this.room);
       reserveRef.push({
         userId: this.profile.userId,
         userName: this.profile.displayName,
         room: this.room,
-        name: room,
+        name: room.name,
         start: general.convertToTimestamp(start),
         end: general.convertToTimestamp(end),
-        color: color,
+        color: room.color,
         timed: true
       });
       if (liff.isInClient()) {

@@ -1,16 +1,42 @@
-export function getURLParams(href) {
-    let uri = href.split("?");
-    if (uri.length == 2) {
-        let vars = uri[1].split("&");
-        let getVars = {};
-        let tmp = "";
-        vars.forEach(function (v) {
-            tmp = v.split("=");
-            if (tmp.length == 2) getVars[tmp[0]] = tmp[1];
+export function displayDate(timestamp, showDate = true, showTime = true) {
+    if (timestamp == undefined) return;
+    var cDate = new Date(timestamp);
+    cDate = new Date(
+        cDate.getFullYear(),
+        cDate.getMonth(),
+        cDate.getDate(),
+        cDate.getHours(),
+        cDate.getMinutes()
+    );
+
+    if (showDate && showTime) {
+        return cDate.toLocaleDateString("th-TH", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            weekday: "short",
+            hour: "numeric",
+            minute: "numeric"
         });
-        return getVars
+    }
+
+    if (showDate) {
+        return cDate.toLocaleDateString("th-TH", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            weekday: "short"
+        });
+    }
+
+    if (showTime) {
+        return cDate.toLocaleTimeString("th-TH", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
     }
 }
+
 export function getThaiMonth(month) {
     if (Number(month) < 1 && Number(month) > 12) return ""
     var monthNamesThai = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",

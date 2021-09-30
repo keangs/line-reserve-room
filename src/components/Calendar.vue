@@ -89,7 +89,7 @@
                 วันที่:
               </v-col>
               <v-col class="text-left font-weight-bold">
-                {{ displayDate(selectedEvent.start, true, false) }}
+                {{ general.displayDate(selectedEvent.start, true, false) }}
               </v-col>
             </v-row>
             <v-row>
@@ -97,8 +97,8 @@
                 เวลา:
               </v-col>
               <v-col class="text-left font-weight-bold">
-                {{ displayDate(selectedEvent.start, false, true) }} -
-                {{ displayDate(selectedEvent.end, false, true) }}
+                {{ general.displayDate(selectedEvent.start, false, true) }} -
+                {{ general.displayDate(selectedEvent.end, false, true) }}
               </v-col>
             </v-row>
           </v-card-text>
@@ -164,7 +164,6 @@ import "firebase/compat/database";
 
 // new vConsole();
 
-let liff;
 firebase.initializeApp({
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "reservelinebot.firebaseapp.com",
@@ -180,10 +179,7 @@ var reserveRef = db.ref("/reserve");
 
 export default {
   data: () => ({
-    profile: {
-      userId: "test",
-      displayName: "test"
-    },
+    general,
     isMounted: false,
     dialogDate: false,
     cancelReserve: false,
@@ -224,16 +220,7 @@ export default {
     ]
   }),
   computed: {},
-  async beforeCreate() {
-    // liff = this.$liff;
-    // liff.ready.then(async () => {
-    //   if (!liff.isLoggedIn()) {
-    //     await liff.login();
-    //   }
-    // });
-    // liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    // this.profile = await liff.getProfile();
-  },
+
   mounted() {
     this.isMounted = true;
     this.events = [];
@@ -261,8 +248,8 @@ export default {
       }
     },
     async sendMsg(text) {
-      if (liff.getContext().type !== "none") {
-        await liff.sendMessages([
+      if (this.$liff.getContext().type !== "none") {
+        await this.$liff.sendMessages([
           {
             type: "text",
             text: text
@@ -282,44 +269,6 @@ export default {
         }
         this.events = events;
       });
-    },
-    displayDate(timestamp, showDate = true, showTime = true) {
-      if (timestamp == undefined) return;
-      var cDate = new Date(timestamp);
-      cDate = new Date(
-        cDate.getFullYear(),
-        cDate.getMonth(),
-        cDate.getDate(),
-        cDate.getHours(),
-        cDate.getMinutes()
-      );
-
-      if (showDate && showTime) {
-        return cDate.toLocaleDateString("th-TH", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          weekday: "short",
-          hour: "numeric",
-          minute: "numeric"
-        });
-      }
-
-      if (showDate) {
-        return cDate.toLocaleDateString("th-TH", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          weekday: "short"
-        });
-      }
-
-      if (showTime) {
-        return cDate.toLocaleTimeString("th-TH", {
-          hour: "2-digit",
-          minute: "2-digit"
-        });
-      }
     },
 
     showReserve() {
@@ -387,18 +336,18 @@ export default {
     deleteReserve(event) {
       if (event.key == undefined) return;
       reserveRef.child(event.key).remove();
-      if (liff.isInClient()) {
+      if (this.$liff.isInClient()) {
         let msg = `ยกเลิกการจองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
           event.name
-        }\nวันที่: ${this.displayDate(
+        }\nวันที่: ${general.displayDate(
           event.start,
           true,
           false
-        )}\nเวลา: ${this.displayDate(
+        )}\nเวลา: ${general.displayDate(
           event.start,
           false,
           true
-        )} - ${this.displayDate(event.end, false, true)}`;
+        )} - ${general.displayDate(event.end, false, true)}`;
         this.sendMsg(msg);
       }
     },
@@ -436,8 +385,8 @@ export default {
 
       let room = this.roomName(this.room);
       reserveRef.push({
-        userId: this.profile.userId,
-        userName: this.profile.displayName,
+        userId: this.$store.state.profile.userId,
+        userName: this.$store.state.profile.displayName,
         room: this.room,
         name: room.name,
         start: general.convertToTimestamp(start),
@@ -445,16 +394,16 @@ export default {
         color: room.color,
         timed: true
       });
-      if (liff.isInClient()) {
-        let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${room}\nวันที่: ${this.displayDate(
+      if (this.$liff.isInClient()) {
+        let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${room}\nวันที่: ${general.displayDate(
           start,
           true,
           false
-        )}\nเวลา: ${this.displayDate(start, false, true)} - ${this.displayDate(
-          end,
+        )}\nเวลา: ${general.displayDate(
+          start,
           false,
           true
-        )}`;
+        )} - ${general.displayDate(end, false, true)}`;
         this.sendMsg(msg);
       }
 
@@ -493,7 +442,7 @@ export default {
         open();
       }
       this.cancelReserve = false;
-      if (event.userId == this.profile.userId) {
+      if (event.userId == this.$store.state.profile.userId) {
         this.cancelReserve = true;
       }
 

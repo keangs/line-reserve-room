@@ -34,12 +34,12 @@ export default {
     Calendar
   },
   data: () => ({
-    action: "reserve"
+    action: "check"
   }),
   async beforeCreate() {
     this.$liff.ready.then(async () => {
       if (!this.$liff.isLoggedIn()) {
-        await this.$liff.login();
+        // await this.$liff.login();
       }
     });
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });

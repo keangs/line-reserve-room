@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-main>
-      <Calendar />
-      <!-- <Reserve /> -->
+      <Calendar v-if="action == 'reserve'" />
+      <Check v-if="action == 'check'" />
     </v-main>
   </v-app>
 </template>
@@ -10,29 +10,47 @@
 <script>
 // import Reserve from "./components/Reserve";
 import Calendar from "./components/Calendar";
-import { getURLParams } from "@/js/general.js";
-
+import Check from "./components/Check";
+import firebase from "firebase/compat/app";
+firebase.initializeApp({
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: "reservelinebot.firebaseapp.com",
+  databaseURL:
+    "https://reservelinebot-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "reservelinebot",
+  storageBucket: "reservelinebot.appspot.com",
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MSG_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID
+});
 export default {
   name: "App",
 
   components: {
-    // Reserve,
+    Check,
     Calendar
   },
   data: () => ({
-    //
+    action: "reserve"
   }),
+  async beforeCreate() {
+    this.$liff.ready.then(async () => {
+      if (!this.$liff.isLoggedIn()) {
+        await this.$liff.login();
+      }
+    });
+    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    this.$store.state.profile = await this.$liff.getProfile();
+  },
   mounted() {
-    console.log(window.location.search);
     const queryString = decodeURIComponent(window.location.search).replace(
       "?liff.state=",
       ""
     );
-    console.log(queryString);
     const params = new URLSearchParams(queryString);
-    console.log(params);
     const action = params.get("action");
-    console.log("action", action);
+    if (action == "check") {
+      this.action = "check";
+    }
   }
 };
 </script>

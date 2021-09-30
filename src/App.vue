@@ -12,6 +12,10 @@
 import Calendar from "./components/Calendar";
 import Check from "./components/Check";
 import firebase from "firebase/compat/app";
+import vConsole from "@/js/vconsole.min.js";
+
+new vConsole();
+
 firebase.initializeApp({
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "reservelinebot.firebaseapp.com",
@@ -40,6 +44,7 @@ export default {
     });
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$store.state.profile = await this.$liff.getProfile();
+    console.log(this.$store.state.profile);
   },
   mounted() {
     const queryString = decodeURIComponent(window.location.search).replace(

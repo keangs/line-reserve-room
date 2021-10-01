@@ -50,11 +50,13 @@ export default {
       .then(profile => {
         console.log("profile", profile);
         this.$store.state.profile = profile;
+        this.isMounted = true;
       })
       .catch(err => {
         console.log("error", err);
+
+        this.isMounted = true;
       });
-    this.isMounted = true;
   }
 };
 </script>

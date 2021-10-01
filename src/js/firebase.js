@@ -1,4 +1,4 @@
-export async function getEvent(ref, id) {
+export async function getEvent(ref, id = "") {
     let events = [];
     let refQuery = ref
     if (![undefined, ""].includes(id)) {

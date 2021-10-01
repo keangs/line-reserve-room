@@ -160,8 +160,6 @@ import * as general from "@/js/general.js";
 import Swal from "sweetalert2";
 import * as line from "@/js/line.js";
 import { getEvent } from "@/js/firebase.js";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
 // import vConsole from "@/js/vconsole.min.js";
 
 // new vConsole();
@@ -311,7 +309,7 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
-      this.getEvent();
+      this.events = await getEvent(this.$store.state.reserveRef);
       if (
         !this.checkReserve(
           this.room,
@@ -363,7 +361,7 @@ export default {
         this.sendMsg(msg);
       }
 
-      this.getEvent();
+      this.events = await getEvent(this.$store.state.reserveRef);
       this.dialogDate = false;
     },
     viewDay({ date }) {

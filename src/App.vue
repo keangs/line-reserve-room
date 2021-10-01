@@ -13,7 +13,6 @@ import Calendar from "./components/Calendar";
 import Check from "./components/Check";
 import firebase from "firebase/compat/app";
 import vConsole from "@/js/vconsole.min.js";
-
 new vConsole();
 
 firebase.initializeApp({
@@ -26,6 +25,10 @@ firebase.initializeApp({
   messagingSenderId: process.env.VUE_APP_FIREBASE_MSG_SENDER_ID,
   appId: process.env.VUE_APP_FIREBASE_APP_ID
 });
+
+export const db = firebase.database();
+var reserveRef = db.ref("/reserve");
+
 export default {
   name: "App",
 
@@ -47,6 +50,7 @@ export default {
     console.log(this.$store.state.profile);
   },
   mounted() {
+    this.$store.state.reserveRef = reserveRef;
     const queryString = decodeURIComponent(window.location.search).replace(
       "?liff.state=",
       ""

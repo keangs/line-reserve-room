@@ -164,16 +164,6 @@ import "firebase/compat/database";
 
 // new vConsole();
 
-firebase.initializeApp({
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: "reservelinebot.firebaseapp.com",
-  databaseURL:
-    "https://reservelinebot-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "reservelinebot",
-  storageBucket: "reservelinebot.appspot.com",
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MSG_SENDER_ID,
-  appId: process.env.VUE_APP_FIREBASE_APP_ID
-});
 export const db = firebase.database();
 var reserveRef = db.ref("/reserve");
 

@@ -4,6 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
+    <div style="font-size:12px">v 1.0.1</div>
   </v-app>
 </template>
 
@@ -26,7 +27,7 @@ export default {
     action: "reserve"
   }),
   async beforeCreate() {},
-  mounted() {
+  async mounted() {
     const db = this.$firebase.database();
     this.$store.state.reserveRef = db.ref("/reserve");
     const queryString = decodeURIComponent(window.location.search).replace(
@@ -39,22 +40,21 @@ export default {
       this.action = "check";
     }
 
-    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    this.$liff.ready.then(async () => {
-      if (!(await this.$liff.isLoggedIn())) {
-        await this.$liff.login();
-      }
-      this.$liff
-        .getProfile()
-        .then(profile => {
-          this.$store.state.profile = profile;
-        })
-        .catch(err => {
-          console.log("error", err);
-        });
-
-      this.isMounted = true;
-    });
+    await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    await this.$liff.ready;
+    if (!this.$liff.isLoggedIn()) {
+      this.$liff.login();
+    }
+    this.$liff
+      .getProfile()
+      .then(profile => {
+        console.log("profile", profile);
+        this.$store.state.profile = profile;
+      })
+      .catch(err => {
+        console.log("error", err);
+      });
+    this.isMounted = true;
   }
 };
 </script>

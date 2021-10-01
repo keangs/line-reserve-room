@@ -29,7 +29,7 @@ export default {
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$liff.ready.then(async () => {
       if (!(await this.$liff.isLoggedIn())) {
-        // await this.$liff.login();
+        await this.$liff.login();
       }
     });
   },

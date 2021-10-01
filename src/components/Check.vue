@@ -105,6 +105,7 @@
 <script>
 import * as general from "@/js/general.js";
 import * as line from "@/js/line.js";
+import { getEvent } from "@/js/firebase.js";
 
 export default {
   data: () => ({
@@ -114,26 +115,14 @@ export default {
     model: null,
     events: []
   }),
-  mounted() {
-    this.getEvent();
+  async mounted() {
+    this.events = await getEvent(
+      this.$store.state.reserveRef,
+      this.$store.state.profile.userId
+    );
     this.isMounted = true;
   },
-  methods: {
-    getEvent() {
-      reserveRef.on("value", snapshot => {
-        let events = [];
-        for (var key in snapshot.val()) {
-          let item = snapshot.val()[key];
-          item.key = key;
-          item.start = new Date(item.start * 1000);
-          item.end = new Date(item.end * 1000);
-          events.push(item);
-        }
-
-        this.events = events;
-      });
-    }
-  }
+  methods: {}
 };
 </script>
 

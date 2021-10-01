@@ -9,7 +9,7 @@ export default new Vuex.Store({
       userId: "test",
       displayName: "test"
     },
-    reserveRef,
+    reserveRef: null,
   },
   mutations: {
   },

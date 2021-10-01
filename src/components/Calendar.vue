@@ -208,9 +208,6 @@ export default {
   computed: {},
 
   async mounted() {
-    if (await this.$liff.isLoggedIn()) {
-      this.$store.state.profile = await this.$liff.getProfile();
-    }
     this.$refs.calendar.checkChange();
     this.events = await getEvent(this.$store.state.reserveRef);
     this.isMounted = true;

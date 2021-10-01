@@ -65,9 +65,6 @@ export default {
     events: []
   }),
   async mounted() {
-    if (await this.$liff.isLoggedIn()) {
-      this.$store.state.profile = await this.$liff.getProfile();
-    }
     this.events = await getEvent(
       this.$store.state.reserveRef,
       this.$store.state.profile.userId

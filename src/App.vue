@@ -28,7 +28,7 @@ export default {
   async beforeCreate() {
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$liff.ready.then(async () => {
-      if (!this.$liff.isLoggedIn()) {
+      if (!(await this.$liff.isLoggedIn())) {
         await this.$liff.login();
       }
     });

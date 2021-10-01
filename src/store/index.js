@@ -5,7 +5,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    profile: null,
+    profile: {
+      userId: "test",
+      displayName: "test",
+    },
     reserveRef: null,
   },
   mutations: {

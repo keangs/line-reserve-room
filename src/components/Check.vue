@@ -38,12 +38,7 @@
                   </v-card-text>
                   <v-divider></v-divider>
                   <v-card-actions>
-                    <v-btn
-                      color="error"
-                      @click="
-                        line.deleteReserve($liff, n, $store.state.reserveRef)
-                      "
-                    >
+                    <v-btn color="error" @click="deleteItem(n)">
                       ยกเลิกการจอง
                     </v-btn>
                   </v-card-actions>
@@ -59,13 +54,12 @@
 
 <script>
 import * as general from "@/js/general.js";
-import * as line from "@/js/line.js";
-import { getEvent } from "@/js/firebase.js";
+import { getEvent, deleteReserve } from "@/js/firebase.js";
 
 export default {
   data: () => ({
     general,
-    line,
+    deleteReserve,
     isMounted: false,
     model: null,
     events: []
@@ -74,14 +68,21 @@ export default {
     if (await this.$liff.isLoggedIn()) {
       this.$store.state.profile = await this.$liff.getProfile();
     }
-    console.log(this.$store.state.profile);
     this.events = await getEvent(
       this.$store.state.reserveRef,
       this.$store.state.profile.userId
     );
     this.isMounted = true;
   },
-  methods: {}
+  methods: {
+    async deleteItem(n) {
+      deleteReserve(this.$liff, n, this.$store.state.reserveRef);
+      this.events = await getEvent(
+        this.$store.state.reserveRef,
+        this.$store.state.profile.userId
+      );
+    }
+  }
 };
 </script>
 

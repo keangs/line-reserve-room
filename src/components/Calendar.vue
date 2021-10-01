@@ -345,7 +345,9 @@ export default {
         timed: true
       });
       if (this.$liff.isInClient()) {
-        let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${room}\nวันที่: ${general.displayDate(
+        let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
+          room.name
+        }\nวันที่: ${general.displayDate(
           start,
           true,
           false

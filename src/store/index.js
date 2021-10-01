@@ -8,7 +8,8 @@ export default new Vuex.Store({
     profile: {
       userId: "test",
       displayName: "test"
-    }
+    },
+    reserveRef,
   },
   mutations: {
   },

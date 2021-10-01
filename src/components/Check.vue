@@ -83,7 +83,12 @@
                   </v-card-text>
                   <v-divider></v-divider>
                   <v-card-actions>
-                    <v-btn color="error" @click="deleteReserve(n)">
+                    <v-btn
+                      color="error"
+                      @click="
+                        line.deleteReserve($liff, n, $store.state.reserveRef)
+                      "
+                    >
                       ยกเลิกการจอง
                     </v-btn>
                   </v-card-actions>
@@ -99,15 +104,12 @@
 
 <script>
 import * as general from "@/js/general.js";
-import firebase from "firebase/compat/app";
-import "firebase/compat/database";
-
-export const db = firebase.database();
-var reserveRef = db.ref("/reserve");
+import * as line from "@/js/line.js";
 
 export default {
   data: () => ({
     general,
+    line,
     isMounted: false,
     model: null,
     events: []
@@ -117,24 +119,6 @@ export default {
     this.isMounted = true;
   },
   methods: {
-    deleteReserve(event) {
-      if (event.key == undefined) return;
-      reserveRef.child(event.key).remove();
-      if (this.$liff.isInClient()) {
-        let msg = `ยกเลิกการจองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
-          event.name
-        }\nวันที่: ${general.displayDate(
-          event.start,
-          true,
-          false
-        )}\nเวลา: ${general.displayDate(
-          event.start,
-          false,
-          true
-        )} - ${general.displayDate(event.end, false, true)}`;
-        this.sendMsg(msg);
-      }
-    },
     getEvent() {
       reserveRef.on("value", snapshot => {
         let events = [];

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main v-if="isMounted">
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
@@ -11,23 +11,8 @@
 // import Reserve from "./components/Reserve";
 import Calendar from "./components/Calendar";
 import Check from "./components/Check";
-import firebase from "firebase/compat/app";
 import vConsole from "@/js/vconsole.min.js";
 new vConsole();
-
-firebase.initializeApp({
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: "reservelinebot.firebaseapp.com",
-  databaseURL:
-    "https://reservelinebot-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "reservelinebot",
-  storageBucket: "reservelinebot.appspot.com",
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MSG_SENDER_ID,
-  appId: process.env.VUE_APP_FIREBASE_APP_ID
-});
-
-export const db = firebase.database();
-var reserveRef = db.ref("/reserve");
 
 export default {
   name: "App",
@@ -37,6 +22,7 @@ export default {
     Calendar
   },
   data: () => ({
+    isMounted: false,
     action: "reserve"
   }),
   async beforeCreate() {
@@ -47,10 +33,10 @@ export default {
     });
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$store.state.profile = await this.$liff.getProfile();
-    console.log(this.$store.state.profile);
   },
   mounted() {
-    this.$store.state.reserveRef = reserveRef;
+    const db = this.$firebase.database();
+    this.$store.state.reserveRef = db.ref("/reserve");
     const queryString = decodeURIComponent(window.location.search).replace(
       "?liff.state=",
       ""
@@ -60,6 +46,7 @@ export default {
     if (action == "check") {
       this.action = "check";
     }
+    this.isMounted = true;
   }
 };
 </script>

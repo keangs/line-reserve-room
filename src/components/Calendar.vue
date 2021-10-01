@@ -106,7 +106,7 @@
             <v-btn
               color="error"
               @click="
-                deleteReserve(selectedEvent);
+                line.deleteReserve($liff, n, $store.state.reserveRef);
                 selectedOpen = false;
               "
               v-if="cancelReserve"
@@ -158,18 +158,17 @@
 <script>
 import * as general from "@/js/general.js";
 import Swal from "sweetalert2";
+import * as line from "@/js/line.js";
+import { getEvent } from "@/js/firebase.js";
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 // import vConsole from "@/js/vconsole.min.js";
 
 // new vConsole();
-
-export const db = firebase.database();
-var reserveRef = db.ref("/reserve");
-
 export default {
   data: () => ({
     general,
+    line,
     isMounted: false,
     dialogDate: false,
     cancelReserve: false,
@@ -211,11 +210,10 @@ export default {
   }),
   computed: {},
 
-  mounted() {
-    this.isMounted = true;
-    this.events = [];
+  async mounted() {
     this.$refs.calendar.checkChange();
-    this.getEvent();
+    this.events = await getEvent(this.$store.state.reserveRef);
+    this.isMounted = true;
   },
   methods: {
     roomName(room) {
@@ -247,20 +245,6 @@ export default {
         ]);
       }
     },
-    getEvent() {
-      reserveRef.on("value", snapshot => {
-        let events = [];
-        for (var key in snapshot.val()) {
-          let item = snapshot.val()[key];
-          item.key = key;
-          item.start = new Date(item.start * 1000);
-          item.end = new Date(item.end * 1000);
-          events.push(item);
-        }
-        this.events = events;
-      });
-    },
-
     showReserve() {
       let cDate = this.focus.replaceAll("-", "");
       let [year, month, day] = [
@@ -323,24 +307,6 @@ export default {
       if (inTime) return false;
       return true;
     },
-    deleteReserve(event) {
-      if (event.key == undefined) return;
-      reserveRef.child(event.key).remove();
-      if (this.$liff.isInClient()) {
-        let msg = `ยกเลิกการจองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
-          event.name
-        }\nวันที่: ${general.displayDate(
-          event.start,
-          true,
-          false
-        )}\nเวลา: ${general.displayDate(
-          event.start,
-          false,
-          true
-        )} - ${general.displayDate(event.end, false, true)}`;
-        this.sendMsg(msg);
-      }
-    },
     async addReserve() {
       if (!this.$refs.form.validate()) {
         return;
@@ -374,7 +340,7 @@ export default {
       );
 
       let room = this.roomName(this.room);
-      reserveRef.push({
+      this.$store.state.reserveRef.push({
         userId: this.$store.state.profile.userId,
         userName: this.$store.state.profile.displayName,
         room: this.room,

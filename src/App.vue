@@ -32,6 +32,14 @@ export default {
         await this.$liff.login();
       }
     });
+    this.$liff
+      .getProfile()
+      .then(profile => {
+        this.$store.state.profile = profile;
+      })
+      .catch(err => {
+        console.log("error", err);
+      });
   },
   mounted() {
     const db = this.$firebase.database();

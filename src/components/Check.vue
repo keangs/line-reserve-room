@@ -65,6 +65,7 @@ export default {
     events: []
   }),
   async mounted() {
+    console.log(" this.$store.state.profile", this.$store.state.profile);
     this.events = await getEvent(
       this.$store.state.reserveRef,
       this.$store.state.profile.userId

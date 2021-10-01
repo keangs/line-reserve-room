@@ -4,7 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
-    <div style="font-size:12px">v 1.0.1</div>
+    <div style="font-size:12px">v 1.0.2</div>
   </v-app>
 </template>
 

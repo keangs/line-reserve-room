@@ -1,50 +1,5 @@
 <template>
   <v-container fill-height class="pa-0">
-    <!-- <v-row no-gutters>
-      <v-col>
-        <v-slide-group
-          v-model="model"
-          class="mx-auto"
-          mandatory
-          show-arrows
-          prev-icon="mdi-chevron-left-circle-outline"
-          next-icon="mdi-chevron-right-circle-outline"
-        >
-          <v-slide-item v-for="n in events" :key="n.key">
-            <v-card class="ma-2" width="220">
-              <v-card-title :class="`${n.color}`">
-                <strong style="color:white">{{ n.name }}</strong>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-col class="text--primary" style="font-size:15px">
-                  <v-row>
-                    <p>
-                      <strong>วันที่:</strong>
-                      {{ general.displayDate(n.start, true, false) }}
-                    </p>
-                  </v-row>
-                  <v-row>
-                    <p>
-                      <strong>เวลา:</strong>
-                      {{ general.displayDate(n.start, false, true) }} -
-                      {{ general.displayDate(n.end, false, true) }}
-                    </p>
-                  </v-row>
-                </v-col>
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn color="error">
-                  ยกเลิกการจอง
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-slide-item>
-        </v-slide-group>
-      </v-col>
-    </v-row> -->
-
     <v-row>
       <v-col>
         <div>จำนวนการจอง: {{ events.length }}</div>
@@ -116,6 +71,7 @@ export default {
     events: []
   }),
   async mounted() {
+    console.log(this.$store.state.profile);
     this.events = await getEvent(
       this.$store.state.reserveRef,
       this.$store.state.profile.userId

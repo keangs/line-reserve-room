@@ -11,8 +11,8 @@
 // import Reserve from "./components/Reserve";
 import Calendar from "./components/Calendar";
 import Check from "./components/Check";
-// import vConsole from "@/js/vconsole.min.js";
-// new vConsole();
+import vConsole from "@/js/vconsole.min.js";
+new vConsole();
 
 export default {
   name: "App",
@@ -28,7 +28,7 @@ export default {
   async beforeCreate() {
     this.$liff.ready.then(async () => {
       if (!this.$liff.isLoggedIn()) {
-        // await this.$liff.login();
+        await this.$liff.login();
       }
     });
     this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });

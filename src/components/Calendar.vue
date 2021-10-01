@@ -106,7 +106,7 @@
             <v-btn
               color="error"
               @click="
-                line.deleteReserve($liff, n, $store.state.reserveRef);
+                deleteItem(selectedEvent);
                 selectedOpen = false;
               "
               v-if="cancelReserve"
@@ -158,15 +158,14 @@
 <script>
 import * as general from "@/js/general.js";
 import Swal from "sweetalert2";
-import * as line from "@/js/line.js";
-import { getEvent } from "@/js/firebase.js";
+import { sendMsg } from "@/js/line";
+import { getEvent, deleteReserve } from "@/js/firebase.js";
 // import vConsole from "@/js/vconsole.min.js";
-
 // new vConsole();
+
 export default {
   data: () => ({
     general,
-    line,
     isMounted: false,
     dialogDate: false,
     cancelReserve: false,
@@ -236,16 +235,6 @@ export default {
           };
       }
     },
-    async sendMsg(text) {
-      if (this.$liff.getContext().type !== "none") {
-        await this.$liff.sendMessages([
-          {
-            type: "text",
-            text: text
-          }
-        ]);
-      }
-    },
     showReserve() {
       let cDate = this.focus.replaceAll("-", "");
       let [year, month, day] = [
@@ -308,6 +297,13 @@ export default {
       if (inTime) return false;
       return true;
     },
+    async deleteItem(n) {
+      deleteReserve(this.$liff, n, this.$store.state.reserveRef);
+      this.events = await getEvent(
+        this.$store.state.reserveRef,
+        this.$store.state.profile.userId
+      );
+    },
     async addReserve() {
       if (!this.$refs.form.validate()) {
         return;
@@ -361,7 +357,7 @@ export default {
           false,
           true
         )} - ${general.displayDate(end, false, true)}`;
-        this.sendMsg(msg);
+        sendMsg(this.$liff, msg);
       }
 
       this.events = await getEvent(this.$store.state.reserveRef);

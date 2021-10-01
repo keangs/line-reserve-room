@@ -26,6 +26,7 @@ export default {
     action: "reserve"
   }),
   async beforeCreate() {
+    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$liff.ready.then(async () => {
       if (!this.$liff.isLoggedIn()) {
         await this.$liff.login();
@@ -35,7 +36,6 @@ export default {
         this.$store.state.profile = await this.$liff.getProfile();
       }
     });
-    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
   },
   mounted() {
     const db = this.$firebase.database();

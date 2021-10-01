@@ -1,7 +1,7 @@
 export async function getEvent(ref, id) {
     let events = [];
     let refQuery = ref
-    if ([undefined, ""].includes(id)) {
+    if (![undefined, ""].includes(id)) {
         refQuery = ref.orderByChild('userId').equalTo(id)
     }
     await refQuery.once("value", snapshot => {

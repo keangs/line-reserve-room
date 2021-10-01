@@ -25,22 +25,7 @@ export default {
     isMounted: false,
     action: "reserve"
   }),
-  async beforeCreate() {
-    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    this.$liff.ready.then(async () => {
-      if (!(await this.$liff.isLoggedIn())) {
-        await this.$liff.login();
-      }
-    });
-    this.$liff
-      .getProfile()
-      .then(profile => {
-        this.$store.state.profile = profile;
-      })
-      .catch(err => {
-        console.log("error", err);
-      });
-  },
+  async beforeCreate() {},
   mounted() {
     const db = this.$firebase.database();
     this.$store.state.reserveRef = db.ref("/reserve");
@@ -53,7 +38,23 @@ export default {
     if (action == "check") {
       this.action = "check";
     }
-    this.isMounted = true;
+
+    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    this.$liff.ready.then(async () => {
+      if (!(await this.$liff.isLoggedIn())) {
+        await this.$liff.login();
+      }
+      this.$liff
+        .getProfile()
+        .then(profile => {
+          this.$store.state.profile = profile;
+        })
+        .catch(err => {
+          console.log("error", err);
+        });
+
+      this.isMounted = true;
+    });
   }
 };
 </script>

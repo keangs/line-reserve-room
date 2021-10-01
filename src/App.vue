@@ -26,13 +26,16 @@ export default {
     action: "reserve"
   }),
   async beforeCreate() {
+    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     this.$liff.ready.then(async () => {
       if (!this.$liff.isLoggedIn()) {
-        // await this.$liff.login();
+        await this.$liff.login();
+      }
+
+      if (this.$liff.isLoggedIn()) {
+        this.$store.state.profile = await this.$liff.getProfile();
       }
     });
-    this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    this.$store.state.profile = await this.$liff.getProfile();
   },
   mounted() {
     const db = this.$firebase.database();

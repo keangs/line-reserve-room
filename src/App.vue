@@ -31,10 +31,6 @@ export default {
       if (!this.$liff.isLoggedIn()) {
         await this.$liff.login();
       }
-
-      if (this.$liff.isLoggedIn()) {
-        this.$store.state.profile = await this.$liff.getProfile();
-      }
     });
   },
   mounted() {

@@ -4,7 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
-    <div style="font-size:12px">v 1.0.2</div>
+    <div style="font-size:12px">v 1.1.0</div>
   </v-app>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   },
   data: () => ({
     isMounted: false,
-    action: "check"
+    action: "reserve"
   }),
   async beforeCreate() {},
   async mounted() {
@@ -54,7 +54,6 @@ export default {
       })
       .catch(err => {
         console.log("error", err);
-
         this.isMounted = true;
       });
   }

@@ -15,8 +15,10 @@
             >
               <v-slide-item v-for="n in events" :key="n.key">
                 <v-card class="ma-2" width="220">
-                  <v-card-title :class="`${n.color}`">
-                    <strong style="color:white">{{ n.name }}</strong>
+                  <v-card-title :class="`${general.getRoom(n.room).color}`">
+                    <strong style="color:white">{{
+                      "ห้องประชุม " + general.getRoom(n.room).name
+                    }}</strong>
                   </v-card-title>
                   <v-divider></v-divider>
                   <v-card-text>
@@ -65,7 +67,6 @@ export default {
     events: []
   }),
   async mounted() {
-    console.log(" this.$store.state.profile", this.$store.state.profile);
     this.events = await getEvent(
       this.$store.state.reserveRef,
       this.$store.state.profile.userId

@@ -63,6 +63,13 @@
         locale="th"
         :short-months="false"
       >
+        <template v-slot:event="{ event }">
+          <div class="v-event-draggable pl-1">
+            {{ general.getRoom(event.room).name }}
+            {{ general.displayDate(event.start, false, true) }} -
+            {{ general.displayDate(event.end, false, true) }}
+          </div>
+        </template>
       </v-calendar>
       <v-menu
         v-model="selectedOpen"
@@ -71,8 +78,11 @@
         offset-x
       >
         <v-card color="grey lighten-4" min-width="300px" flat>
-          <v-toolbar :color="selectedEvent.color" dark>
-            <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
+          <v-toolbar :color="general.getRoom(selectedEvent.room).color" dark>
+            <v-toolbar-title
+              v-html="'ห้องประชุม ' + general.getRoom(selectedEvent.room).name"
+            >
+            </v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
           <v-card-text>
@@ -126,19 +136,43 @@
       <v-card>
         <v-container>
           <v-card elevation="14" max-width="600" class="mx-auto">
-            <v-carousel v-model="room" height="300">
-              <v-carousel-item key="1" src="../image/room-a.jpg">
-              </v-carousel-item>
-              <v-carousel-item key="2" src="../image/room-b.jpg">
-              </v-carousel-item>
+            <v-carousel
+              cycle
+              hide-delimiter-background
+              show-arrows-on-hover
+              height="300"
+            >
               <v-carousel-item
-                key="3"
-                src="../image/room-c.jpg"
-              ></v-carousel-item>
+                eager
+                v-for="(item, i) in roomSelected.image"
+                :key="i"
+                :src="item.src"
+              >
+              </v-carousel-item>
             </v-carousel>
           </v-card>
           <div class="pt-5"></div>
           <v-form ref="form" v-model="valid" lazy-validation>
+            <v-row>
+              <v-col>
+                <v-select
+                  v-model="roomSelected"
+                  :items="general.getRoom()"
+                  item-text="name"
+                  item-value="room"
+                  label="ห้องประชุมที่ต้องการจอง"
+                  :return-object="true"
+                ></v-select>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  label="จำนวนที่นั่งในห้องประชุม"
+                  :value="roomSelected.seat"
+                  readonly
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
             <DatePicker label="วันที่จองห้องประชุม" :value.sync="dateStart" />
             <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
             <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" />
@@ -170,7 +204,7 @@ export default {
     dialogDate: false,
     cancelReserve: false,
     valid: true,
-    room: 0,
+    roomSelected: {},
     dateStart: 0,
     timeStart: "",
     timeEnd: "",
@@ -184,54 +218,17 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1"
-    ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party"
-    ]
+    events: []
   }),
   computed: {},
 
   async mounted() {
+    this.roomSelected = general.getRoom(0);
     this.$refs.calendar.checkChange();
     this.events = await getEvent(this.$store.state.reserveRef);
     this.isMounted = true;
   },
   methods: {
-    roomName(room) {
-      switch (room) {
-        case 0:
-          return {
-            name: "Room A",
-            color: "red"
-          };
-        case 1:
-          return {
-            name: "Room B",
-            color: "blue"
-          };
-        case 2:
-          return {
-            name: "Room C",
-            color: "green"
-          };
-      }
-    },
     showReserve() {
       let cDate = this.focus.replaceAll("-", "");
       let [year, month, day] = [
@@ -308,7 +305,7 @@ export default {
       this.events = await getEvent(this.$store.state.reserveRef);
       if (
         !this.checkReserve(
-          this.room,
+          this.roomSelected.room,
           Number(this.dateStart.toString().substring(6, 8)),
           Number(this.dateStart.toString().substring(4, 6)),
           Number(this.dateStart.toString().substring(0, 4)),
@@ -333,17 +330,17 @@ export default {
         this.timeEnd
       );
 
-      let room = this.roomName(this.room);
+      let room = general.getRoom(this.roomSelected.room);
       this.$store.state.reserveRef.push({
         userId: this.$store.state.profile.userId,
         userName: this.$store.state.profile.displayName,
-        room: this.room,
+        room: this.roomSelected.room,
         name: room.name,
         start: general.convertToTimestamp(start),
         end: general.convertToTimestamp(end),
-        color: room.color,
         timed: true
       });
+
       if (this.$liff.isInClient()) {
         let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
           room.name
@@ -367,7 +364,7 @@ export default {
       this.type = "day";
     },
     getEventColor(event) {
-      return event.color;
+      return general.getRoom(event.room).color;
     },
     setToday() {
       this.focus = "";

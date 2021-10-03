@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height class="pa-0">
-    <v-row>
+    <v-row v-if="isMounted">
       <v-col>
         <div>จำนวนการจอง: {{ events.length }}</div>
         <v-row no-gutters>

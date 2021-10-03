@@ -43,7 +43,7 @@ export default {
     await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     await this.$liff.ready;
     if (!this.$liff.isLoggedIn()) {
-      // this.$liff.login();
+      this.$liff.login();
     }
     this.$liff
       .getProfile()

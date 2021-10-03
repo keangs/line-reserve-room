@@ -1,11 +1,11 @@
-import { displayDate } from "./general";
+import { displayDate, getRoom } from "./general";
 import { sendMsg } from "./line";
 
 export function deleteReserve(liff, event, ref) {
   if (event.key == undefined) return;
   ref.child(event.key).remove();
   if (liff.isInClient()) {
-    let msg = `ยกเลิกการจองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${event.name
+    let msg = `ยกเลิกการจองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${getRoom(event.room).name
       }\nวันที่: ${displayDate(
         event.start,
         true,

@@ -9,8 +9,9 @@ Vue.component("DatePicker", DatePicker)
 import TimePicker from "@/components/TimePicker.vue"
 Vue.component("TimePicker", TimePicker)
 
-import firebase from "firebase/compat/app";
+
 import "firebase/compat/database";
+import firebase from "firebase/compat/app";
 firebase.initializeApp({
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "reservelinebot.firebaseapp.com",

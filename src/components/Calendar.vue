@@ -293,10 +293,7 @@ export default {
     },
     async deleteItem(n) {
       deleteReserve(this.$liff, n, this.$store.state.reserveRef);
-      this.events = await getEvent(
-        this.$store.state.reserveRef,
-        this.$store.state.profile.userId
-      );
+      this.events = await getEvent(this.$store.state.reserveRef);
     },
     async addReserve() {
       if (!this.$refs.form.validate()) {

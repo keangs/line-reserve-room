@@ -12,8 +12,8 @@
 // import Reserve from "./components/Reserve";
 import Calendar from "./components/Calendar";
 import Check from "./components/Check";
-import vConsole from "@/js/vconsole.min.js";
-new vConsole();
+// import vConsole from "@/js/vconsole.min.js";
+// new vConsole();
 
 export default {
   name: "App",
@@ -48,7 +48,6 @@ export default {
     this.$liff
       .getProfile()
       .then(profile => {
-        console.log("profile", profile);
         this.$store.state.profile = profile;
         this.isMounted = true;
       })

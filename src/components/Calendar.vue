@@ -304,7 +304,7 @@ export default {
       this.events = await getEvent(this.$store.state.reserveRef);
 
       if (
-        Number(this.timeStart.replace(":", "")) >
+        Number(this.timeStart.replace(":", "")) >=
         Number(this.timeEnd.replace(":", ""))
       ) {
         Swal.fire({

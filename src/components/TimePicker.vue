@@ -65,6 +65,9 @@ export default {
     };
   },
   watch: {
+    value() {
+      this.time = this.value;
+    },
     time() {
       this.$emit("update:value", this.time);
     }

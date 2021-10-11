@@ -218,7 +218,8 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: []
+    events: [],
+    testtest: 0
   }),
   computed: {},
 
@@ -239,6 +240,7 @@ export default {
       this.dateStart = Number(`${year}${month}${day}`);
       this.timeStart = "08:00";
       this.timeEnd = "17:00";
+      this.testtest += 1;
       this.dialogDate = true;
     },
 
@@ -300,6 +302,19 @@ export default {
         return;
       }
       this.events = await getEvent(this.$store.state.reserveRef);
+
+      if (
+        Number(this.timeStart.replace(":", "")) >
+        Number(this.timeEnd.replace(":", ""))
+      ) {
+        Swal.fire({
+          title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
+          text: '"เวลาสิ้นสุด" ต้องมีค่ามากกว่า "เวลาเริ่มต้น"',
+          icon: "error",
+          confirmButtonColor: "#3085d6"
+        });
+        return;
+      }
       if (
         !this.checkReserve(
           this.roomSelected.room,

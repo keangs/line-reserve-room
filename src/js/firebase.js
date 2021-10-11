@@ -44,6 +44,6 @@ export async function getEvent(ref, id = "") {
     }
   });
   events.sort((a, b) => a.start - b.start);
-  console.log("get event", events);
+  // console.log("get event", events);
   return events
 }

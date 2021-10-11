@@ -56,6 +56,9 @@ export default {
     }
   },
   watch: {
+    value() {
+      this.date = this.parseDate(this.value, "");
+    },
     date() {
       this.dateFormatted = this.formatDate(this.date);
       this.$emit("update:value", Number(this.formatToYYYYMMDD(this.date)));

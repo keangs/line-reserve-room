@@ -26,7 +26,6 @@ export default {
     isMounted: false,
     action: "reserve"
   }),
-  async beforeCreate() {},
   async mounted() {
     const db = this.$firebase.database();
     this.$store.state.reserveRef = db.ref("/reserve");
@@ -55,6 +54,8 @@ export default {
         console.log("error", err);
         this.isMounted = true;
       });
+
+    this.isMounted = true;
   }
 };
 </script>

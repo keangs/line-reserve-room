@@ -87,6 +87,11 @@
           </v-toolbar>
           <v-card-text>
             <v-row>
+              <v-col class="text-left font-weight-bold">
+                {{ selectedEvent.detail }}
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="3" class="text-right">
                 ผู้จอง:
               </v-col>
@@ -172,7 +177,10 @@
                 ></v-text-field>
               </v-col>
             </v-row>
-
+            <v-text-field
+              label="รายละเอียดการจอง"
+              v-model="detail"
+            ></v-text-field>
             <DatePicker label="วันที่จองห้องประชุม" :value.sync="dateStart" />
             <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
             <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" />
@@ -205,6 +213,7 @@ export default {
     cancelReserve: false,
     valid: true,
     roomSelected: {},
+    detail: "",
     dateStart: 0,
     timeStart: "",
     timeEnd: "",
@@ -218,8 +227,7 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
-    testtest: 0
+    events: []
   }),
   computed: {},
 
@@ -237,10 +245,10 @@ export default {
         cDate.substring(4, 6),
         cDate.substring(6)
       ];
+      this.detail = "";
       this.dateStart = Number(`${year}${month}${day}`);
       this.timeStart = "08:00";
       this.timeEnd = "17:00";
-      this.testtest += 1;
       this.dialogDate = true;
     },
 
@@ -348,6 +356,7 @@ export default {
         userName: this.$store.state.profile.displayName,
         room: this.roomSelected.room,
         name: room.name,
+        detail: this.detail.trim(),
         start: general.convertToTimestamp(start),
         end: general.convertToTimestamp(end),
         timed: true

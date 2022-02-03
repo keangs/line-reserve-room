@@ -25,6 +25,11 @@
                     <v-col class="text--primary" style="font-size:15px">
                       <v-row>
                         <p>
+                          <strong>{{ n.detail }}</strong>
+                        </p>
+                      </v-row>
+                      <v-row>
+                        <p>
                           <strong>วันที่:</strong>
                           {{ general.displayDate(n.start, true, false) }}
                         </p>

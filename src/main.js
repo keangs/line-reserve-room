@@ -9,6 +9,9 @@ Vue.component("DatePicker", DatePicker)
 import TimePicker from "@/components/TimePicker.vue"
 Vue.component("TimePicker", TimePicker)
 
+import { VDigitalTimePicker } from 'v-digital-time-picker'
+
+Vue.component('v-digital-time-picker', VDigitalTimePicker)
 
 import "firebase/compat/database";
 import firebase from "firebase/compat/app";

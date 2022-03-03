@@ -13,6 +13,7 @@
     "moment": "^2.29.1",
     "moment-range": "^4.0.2",
     "sweetalert2": "^11.1.7",
+    "v-digital-time-picker": "^0.1.8",
     "vue": "^2.6.11",
     "vuetify": "^2.4.0",
     "vuex": "^3.4.0"

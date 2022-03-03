@@ -174,6 +174,7 @@
                   label="จำนวนที่นั่งในห้องประชุม"
                   :value="roomSelected.seat"
                   readonly
+                  class="hide-underline"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -182,8 +183,18 @@
               v-model="detail"
             ></v-text-field>
             <DatePicker label="วันที่จองห้องประชุม" :value.sync="dateStart" />
-            <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
-            <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" />
+            <!-- <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
+            <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" /> -->
+            <v-digital-time-picker
+              label="เวลาเริ่มต้น"
+              v-model="timeStart"
+              append-icon="mdi-clock-time-four-outline"
+            />
+            <v-digital-time-picker
+              label="เวลาสิ้นสุด"
+              v-model="timeEnd"
+              append-icon="mdi-clock-time-four-outline"
+            />
           </v-form>
           <v-btn color="error" class="mr-4" @click="dialogDate = false">
             Cancel
@@ -207,6 +218,7 @@ import { getEvent, deleteReserve } from "@/js/firebase.js";
 
 export default {
   data: () => ({
+    timeValue: "",
     general,
     isMounted: false,
     dialogDate: false,
@@ -422,4 +434,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.hide-underline >>> .v-input__slot::before {
+  border-style: none !important;
+}
+</style>

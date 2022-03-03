@@ -25,6 +25,8 @@
       </v-text-field>
     </template>
     <v-time-picker
+      format="24hr"
+      scrollable
       v-if="menu"
       v-model="time"
       full-width

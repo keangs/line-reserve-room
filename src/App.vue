@@ -33,18 +33,13 @@ export default {
       "?liff.state=",
       ""
     );
-    const params = new URLSearchParams(queryString);
-    const action = params.get("action");
-    if (action == "check") {
-      this.action = "check";
-    }
 
     await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     await this.$liff.ready;
     if (!this.$liff.isLoggedIn()) {
-      this.$liff.login();
+      await this.$liff.login();
     }
-    this.$liff
+    await this.$liff
       .getProfile()
       .then(profile => {
         this.$store.state.profile = profile;
@@ -55,6 +50,11 @@ export default {
         this.isMounted = true;
       });
 
+    const params = new URLSearchParams(queryString);
+    const action = params.get("action");
+    if (action == "check") {
+      this.action = "check";
+    }
     this.isMounted = true;
   }
 };

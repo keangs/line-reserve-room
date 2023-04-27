@@ -79,9 +79,8 @@
       >
         <v-card color="grey lighten-4" min-width="300px" flat>
           <v-toolbar :color="general.getRoom(selectedEvent.room).color" dark>
-            <v-toolbar-title
-              v-html="'ห้องประชุม ' + general.getRoom(selectedEvent.room).name"
-            >
+            <v-toolbar-title>
+              ห้องประชุม {{ general.getRoom(selectedEvent.room).name }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -247,6 +246,7 @@ export default {
     this.roomSelected = general.getRoom(0);
     this.$refs.calendar.checkChange();
     this.events = await getEvent(this.$store.state.reserveRef);
+    // console.log("this.events ", this.events);
     this.isMounted = true;
   },
   methods: {

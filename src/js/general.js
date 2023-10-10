@@ -7,8 +7,8 @@ export function getRoom(room = "") {
       seat: 10,
       image: [
         { src: require("../image/room-c-1.jpg") },
-        { src: require("../image/room-c-2.jpg") }
-      ]
+        { src: require("../image/room-c-2.jpg") },
+      ],
     },
     {
       room: 1,
@@ -17,8 +17,8 @@ export function getRoom(room = "") {
       seat: 6,
       image: [
         { src: require("../image/room-d-1.jpg") },
-        { src: require("../image/room-d-2.jpg") }
-      ]
+        { src: require("../image/room-d-2.jpg") },
+      ],
     },
     {
       room: 2,
@@ -27,8 +27,8 @@ export function getRoom(room = "") {
       seat: 4,
       image: [
         { src: require("../image/room-t-1.jpg") },
-        { src: require("../image/room-t-2.jpg") }
-      ]
+        { src: require("../image/room-t-2.jpg") },
+      ],
     },
     {
       room: 3,
@@ -38,16 +38,16 @@ export function getRoom(room = "") {
       image: [
         { src: require("../image/room-cw-1.jpg") },
         { src: require("../image/room-cw-2.jpg") },
-        { src: require("../image/room-cw-3.jpg") }
-      ]
-    }
-  ]
+        { src: require("../image/room-cw-3.jpg") },
+      ],
+    },
+  ];
 
-  if ([undefined, ""].includes(room)) return roomItems
+  if ([undefined, ""].includes(room)) return roomItems;
 
-  return roomItems.filter(
-    function (item) { return item.room == room }
-  )[0];
+  return roomItems.filter(function (item) {
+    return item.room == room;
+  })[0];
 }
 export function displayDate(timestamp, showDate = true, showTime = true) {
   if (timestamp == undefined) return;
@@ -67,7 +67,7 @@ export function displayDate(timestamp, showDate = true, showTime = true) {
       day: "numeric",
       weekday: "short",
       hour: "numeric",
-      minute: "numeric"
+      minute: "numeric",
     });
   }
 
@@ -76,23 +76,35 @@ export function displayDate(timestamp, showDate = true, showTime = true) {
       year: "numeric",
       month: "long",
       day: "numeric",
-      weekday: "short"
+      weekday: "short",
     });
   }
 
   if (showTime) {
     return cDate.toLocaleTimeString("th-TH", {
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     });
   }
 }
 
 export function getThaiMonth(month) {
-  if (Number(month) < 1 && Number(month) > 12) return ""
-  var monthNamesThai = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-    "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤษจิกายน", "ธันวาคม"];
-  return monthNamesThai[Number(month) - 1]
+  if (Number(month) < 1 && Number(month) > 12) return "";
+  var monthNamesThai = [
+    "มกราคม",
+    "กุมภาพันธ์",
+    "มีนาคม",
+    "เมษายน",
+    "พฤษภาคม",
+    "มิถุนายน",
+    "กรกฎาคม",
+    "สิงหาคม",
+    "กันยายน",
+    "ตุลาคม",
+    "พฤษจิกายน",
+    "ธันวาคม",
+  ];
+  return monthNamesThai[Number(month) - 1];
 }
 
 export function convertToTimestamp(strDate) {
@@ -104,7 +116,7 @@ export function convertToDate(date, time) {
   var dateString = date + " " + time,
     dateTimeParts = dateString.split(" "),
     timeParts = dateTimeParts[1].split(":"),
-    dateParts = dateTimeParts[0].split("-")
+    dateParts = dateTimeParts[0].split("-");
   return new Date(
     dateParts[2],
     parseInt(dateParts[1], 10) - 1,
@@ -114,21 +126,24 @@ export function convertToDate(date, time) {
   );
 }
 
-export function convertDateYYYYMMDD(date, delimiter = "", toAD = false, swap = false) {
-  let cDate = date.toString().padEnd(8, "0")
+export function convertDateYYYYMMDD(
+  date,
+  delimiter = "",
+  toAD = false,
+  swap = false
+) {
+  let cDate = date.toString().padEnd(8, "0");
   let [year, month, day] = [
     cDate.substring(0, 4),
     cDate.substring(4, 6),
     cDate.substring(6),
-  ]
+  ];
   if (toAD) {
-    year -= 543
+    year -= 543;
   }
   if (swap) {
-    return `${year}${delimiter}${month}${delimiter}${day}`
+    return `${year}${delimiter}${month}${delimiter}${day}`;
   } else {
-    return `${day}${delimiter}${month}${delimiter}${year}`
+    return `${day}${delimiter}${month}${delimiter}${year}`;
   }
 }
-
-

@@ -346,10 +346,11 @@ export default {
         return;
       }
 
-      this.dates.forEach((item) => {
-        this.dateStart = moment(item).format("YYYYMMDD");
+      for (const item of this.dates) {
+        this.dateStart = moment(item);
         const parsedDate = moment(item, "YYYYMMDD");
         parsedDate.locale("th");
+        this.dateStart = parsedDate.format("YYYYMMDD");
         if (
           !this.checkReserve(
             this.roomSelected.room,
@@ -374,22 +375,28 @@ export default {
           });
           return;
         }
-      });
+      }
+
       let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
         general.getRoom(this.roomSelected.room).name
       }\n`;
-      this.dates.forEach((item, idx, array) => {
-        this.dateStart = moment(item).format("YYYYMMDD");
+      for (const [idx, item] of this.dates.entries()) {
+        this.dateStart = moment(item);
+        const parsedDate = moment(item, "YYYYMMDD");
+        parsedDate.locale("th");
+        this.dateStart = parsedDate.format("YYYYMMDD");
+
         let start = general.convertToDate(
-          general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
+          general.convertDateYYYYMMDD(this.dateStart, "-", false, false),
           this.timeStart
         );
         let end = general.convertToDate(
-          general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
+          general.convertDateYYYYMMDD(this.dateStart, "-", false, false),
           this.timeEnd
         );
 
         let room = general.getRoom(this.roomSelected.room);
+
         this.$store.state.reserveRef.push({
           userId: this.$store.state.profile.userId,
           userName: this.$store.state.profile.displayName,
@@ -410,10 +417,10 @@ export default {
           false,
           true
         )} - ${general.displayDate(end, false, true)}`;
-        if (idx != array.length - 1) {
+        if (idx != this.dates.length - 1) {
           msg += "\n";
         }
-      });
+      }
 
       if (this.$liff.isInClient()) {
         sendMsg(this.$liff, msg);

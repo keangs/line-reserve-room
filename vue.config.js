@@ -1,7 +1,7 @@
 module.exports = {
   productionSourceMap: false,
-  // publicPath: "/line-reserve-room/",
-  publicPath: "/",
+  publicPath: "/line-reserve-room/",
+  // publicPath: "/",
   transpileDependencies: ["vuetify"],
   devServer: {
     disableHostCheck: true,

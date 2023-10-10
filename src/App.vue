@@ -4,7 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
-    <div style="font-size:12px">v 1.2.2</div>
+    <div style="font-size: 12px">v 1.3.0</div>
   </v-app>
 </template>
 
@@ -20,11 +20,11 @@ export default {
 
   components: {
     Check,
-    Calendar
+    Calendar,
   },
   data: () => ({
     isMounted: false,
-    action: "reserve"
+    action: "reserve",
   }),
   async mounted() {
     const db = this.$firebase.database();
@@ -41,11 +41,11 @@ export default {
     }
     await this.$liff
       .getProfile()
-      .then(profile => {
+      .then((profile) => {
         this.$store.state.profile = profile;
         this.isMounted = true;
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("error", err);
         this.isMounted = true;
       });
@@ -56,7 +56,7 @@ export default {
       this.action = "check";
     }
     this.isMounted = true;
-  }
+  },
 };
 </script>
 

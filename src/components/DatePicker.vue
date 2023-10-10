@@ -28,32 +28,32 @@ export default {
   props: {
     change: {
       type: Function,
-      default: () => 1
+      default: () => 1,
     },
     value: {
       type: Number,
-      default: 0
+      default: 0,
     },
     label: {
       type: String,
-      default: "วันที่"
+      default: "วันที่",
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data: vm => ({
+  data: (vm) => ({
     // dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10)),
     dateFormatted: null,
     date: null,
     menu: false,
-    modal: false
+    modal: false,
   }),
   computed: {
     computedDateFormatted() {
       return this.formatDate(this.date);
-    }
+    },
   },
   watch: {
     value() {
@@ -62,7 +62,7 @@ export default {
     date() {
       this.dateFormatted = this.formatDate(this.date);
       this.$emit("update:value", Number(this.formatToYYYYMMDD(this.date)));
-    }
+    },
   },
   created() {
     if (!this.value) return null;
@@ -87,14 +87,14 @@ export default {
           : [
               date.toString().substring(6),
               date.toString().substring(4, 6),
-              date.toString().substring(0, 4)
+              date.toString().substring(0, 4),
             ];
 
       return `${Number(year) - 543}-${month.padStart(2, "0")}-${day.padStart(
         2,
         "0"
       )}`;
-    }
-  }
+    },
+  },
 };
 </script>

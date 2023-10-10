@@ -6,14 +6,10 @@
           Today
         </v-btn>
         <v-btn fab text small color="grey darken-2" @click="prev">
-          <v-icon>
-            mdi-chevron-left-circle-outline
-          </v-icon>
+          <v-icon> mdi-chevron-left-circle-outline </v-icon>
         </v-btn>
         <v-btn fab text small color="grey darken-2" @click="next">
-          <v-icon>
-            mdi-chevron-right-circle-outline
-          </v-icon>
+          <v-icon> mdi-chevron-right-circle-outline </v-icon>
         </v-btn>
         <v-toolbar-title v-if="$refs.calendar" class="ml-2">
           <h5>{{ $refs.calendar.title }}</h5>
@@ -29,9 +25,7 @@
               class="px-1"
             >
               <span>{{ typeToLabel[type] }}</span>
-              <v-icon right>
-                mdi-menu-down
-              </v-icon>
+              <v-icon right> mdi-menu-down </v-icon>
             </v-btn>
           </template>
           <v-list>
@@ -49,7 +43,7 @@
       <v-calendar
         v-touch="{
           left: () => next(),
-          right: () => prev()
+          right: () => prev(),
         }"
         ref="calendar"
         v-model="focus"
@@ -91,25 +85,19 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="3" class="text-right">
-                ผู้จอง:
-              </v-col>
+              <v-col cols="3" class="text-right"> ผู้จอง: </v-col>
               <v-col class="text-left font-weight-bold">
                 {{ selectedEvent.userName }}
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="3" class="text-right">
-                วันที่:
-              </v-col>
+              <v-col cols="3" class="text-right"> วันที่: </v-col>
               <v-col class="text-left font-weight-bold">
                 {{ general.displayDate(selectedEvent.start, true, false) }}
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="3" class="text-right">
-                เวลา:
-              </v-col>
+              <v-col cols="3" class="text-right"> เวลา: </v-col>
               <v-col class="text-left font-weight-bold">
                 {{ general.displayDate(selectedEvent.start, false, true) }} -
                 {{ general.displayDate(selectedEvent.end, false, true) }}
@@ -166,7 +154,7 @@
                   item-value="room"
                   label="ห้องประชุมที่ต้องการจอง"
                   :return-object="true"
-                ></v-select>
+                />
               </v-col>
               <v-col>
                 <v-text-field
@@ -174,14 +162,30 @@
                   :value="roomSelected.seat"
                   readonly
                   class="hide-underline"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
-            <v-text-field
-              label="รายละเอียดการจอง"
-              v-model="detail"
-            ></v-text-field>
-            <DatePicker label="วันที่จองห้องประชุม" :value.sync="dateStart" />
+            <v-text-field label="รายละเอียดการจอง" v-model="detail" />
+            <v-row>
+              <v-col>
+                <v-date-picker
+                  v-model="dates"
+                  multiple
+                  full-width
+                  locale="th-TH"
+                  :show-current="false"
+                />
+              </v-col>
+            </v-row>
+
+            <!-- <v-row>
+              <v-col>
+                <DatePicker
+                  label="วันที่จองห้องประชุม"
+                  :value.sync="dateStart"
+                />
+              </v-col>
+            </v-row> -->
             <!-- <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
             <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" /> -->
             <v-digital-time-picker
@@ -209,6 +213,7 @@
 
 <script>
 import * as general from "@/js/general.js";
+import moment from "moment";
 import Swal from "sweetalert2";
 import { sendMsg } from "@/js/line";
 import { getEvent, deleteReserve } from "@/js/firebase.js";
@@ -217,6 +222,7 @@ import { getEvent, deleteReserve } from "@/js/firebase.js";
 
 export default {
   data: () => ({
+    dates: [],
     timeValue: "",
     general,
     isMounted: false,
@@ -233,12 +239,12 @@ export default {
     type: "month",
     typeToLabel: {
       month: "Month",
-      day: "Day"
+      day: "Day",
     },
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: []
+    events: [],
   }),
   computed: {},
 
@@ -250,12 +256,16 @@ export default {
     this.isMounted = true;
   },
   methods: {
+    dateFormat(date) {
+      return moment(date).format("ddd DD MMM");
+    },
     showReserve() {
+      this.dates = [this.focus];
       let cDate = this.focus.replaceAll("-", "");
       let [year, month, day] = [
         Number(cDate.substring(0, 4)) + 543,
         cDate.substring(4, 6),
-        cDate.substring(6)
+        cDate.substring(6),
       ];
       this.detail = "";
       this.dateStart = Number(`${year}${month}${day}`);
@@ -265,9 +275,9 @@ export default {
     },
 
     checkReserve(room, day, month, year, timeStart, timeEnd) {
-      year -= 543;
+      // year -= 543;
       month -= 1;
-      let cReserve = this.events.filter(function(item) {
+      let cReserve = this.events.filter(function (item) {
         let cDate = new Date(item.start);
         if (
           item.room === room &&
@@ -278,7 +288,7 @@ export default {
           return item;
       });
       let inTime = 0;
-      cReserve.forEach(item => {
+      cReserve.forEach((item) => {
         var checkTimeStart = new Date(item.start).getTime();
         var checkTimeEnd = new Date(item.end).getTime();
 
@@ -331,53 +341,67 @@ export default {
           title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
           text: '"เวลาสิ้นสุด" ต้องมีค่ามากกว่า "เวลาเริ่มต้น"',
           icon: "error",
-          confirmButtonColor: "#3085d6"
+          confirmButtonColor: "#3085d6",
         });
         return;
       }
-      if (
-        !this.checkReserve(
-          this.roomSelected.room,
-          Number(this.dateStart.toString().substring(6, 8)),
-          Number(this.dateStart.toString().substring(4, 6)),
-          Number(this.dateStart.toString().substring(0, 4)),
-          this.timeStart,
-          this.timeEnd
-        )
-      ) {
-        Swal.fire({
-          title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
-          text: "เนื่องจากมีการจองอยู่ก่อนแล้ว",
-          icon: "error",
-          confirmButtonColor: "#3085d6"
-        });
-        return;
-      }
-      let start = general.convertToDate(
-        general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
-        this.timeStart
-      );
-      let end = general.convertToDate(
-        general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
-        this.timeEnd
-      );
 
-      let room = general.getRoom(this.roomSelected.room);
-      this.$store.state.reserveRef.push({
-        userId: this.$store.state.profile.userId,
-        userName: this.$store.state.profile.displayName,
-        room: this.roomSelected.room,
-        name: room.name,
-        detail: this.detail.trim(),
-        start: general.convertToTimestamp(start),
-        end: general.convertToTimestamp(end),
-        timed: true
+      this.dates.forEach((item) => {
+        this.dateStart = moment(item).format("YYYYMMDD");
+        const parsedDate = moment(item, "YYYYMMDD");
+        parsedDate.locale("th");
+        if (
+          !this.checkReserve(
+            this.roomSelected.room,
+            Number(this.dateStart.toString().substring(6, 8)),
+            Number(this.dateStart.toString().substring(4, 6)),
+            Number(this.dateStart.toString().substring(0, 4)),
+            this.timeStart,
+            this.timeEnd
+          )
+        ) {
+          Swal.fire({
+            title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
+            html: `
+            ห้องประชุม: ${general.getRoom(this.roomSelected.room).name}<br/>
+            วันที่: ${parsedDate.format("DD MMMM")} ${
+              Number(parsedDate.format("YYYY")) + 543
+            }<br/>
+            เวลา: ${this.timeStart} - ${this.timeEnd}<br/><br/>
+            มีการจองอยู่ก่อนแล้ว`,
+            icon: "error",
+            confirmButtonColor: "#3085d6",
+          });
+          return;
+        }
       });
+      let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
+        general.getRoom(this.roomSelected.room).name
+      }\n`;
+      this.dates.forEach((item, idx, array) => {
+        this.dateStart = moment(item).format("YYYYMMDD");
+        let start = general.convertToDate(
+          general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
+          this.timeStart
+        );
+        let end = general.convertToDate(
+          general.convertDateYYYYMMDD(this.dateStart, "-", true, false),
+          this.timeEnd
+        );
 
-      if (this.$liff.isInClient()) {
-        let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
-          room.name
-        }\nวันที่: ${general.displayDate(
+        let room = general.getRoom(this.roomSelected.room);
+        this.$store.state.reserveRef.push({
+          userId: this.$store.state.profile.userId,
+          userName: this.$store.state.profile.displayName,
+          room: this.roomSelected.room,
+          name: room.name,
+          detail: this.detail.trim(),
+          start: general.convertToTimestamp(start),
+          end: general.convertToTimestamp(end),
+          timed: true,
+        });
+
+        msg += `วันที่: ${general.displayDate(
           start,
           true,
           false
@@ -386,6 +410,12 @@ export default {
           false,
           true
         )} - ${general.displayDate(end, false, true)}`;
+        if (idx != array.length - 1) {
+          msg += "\n";
+        }
+      });
+
+      if (this.$liff.isInClient()) {
         sendMsg(this.$liff, msg);
       }
 
@@ -429,8 +459,8 @@ export default {
       }
 
       nativeEvent.stopPropagation();
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -4,7 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
-    <div style="font-size: 12px">v 1.3.1</div>
+    <div style="font-size: 12px">v 1.4.0</div>
   </v-app>
 </template>
 
@@ -34,6 +34,27 @@ export default {
       ""
     );
 
+    // เอาไว้ update data
+    // let refQuery = this.$store.state.reserveRef;
+    // refQuery
+    //   .orderByChild("userName")
+    //   .equalTo("เอ๋ : Boosaya")
+    //   .on("child_added", function (snapshot) {
+    //     let item = snapshot.val();
+    //     if (item.start > 1706063400 && item.detail == "ประชุม Avengers") {
+    //       console.log(item);
+    //       let dateEnd = new Date(item.end * 1000);
+    //       dateEnd.setHours(dateEnd.getHours() - 5);
+    //       console.log(snapshot.key);
+    //       console.log(dateEnd);
+    //       let datum = Date.parse(dateEnd);
+    //       datum = datum / 1000;
+    //       console.log(datum);
+    //       // refQuery.child(snapshot.key).update({ end: datum });
+    //     }
+    //   });
+
+    // เปิดเวลา on เครื่องจริง
     await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     await this.$liff.ready;
     if (!this.$liff.isLoggedIn()) {

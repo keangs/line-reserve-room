@@ -165,7 +165,11 @@
                 />
               </v-col>
             </v-row>
-            <v-text-field label="รายละเอียดการจอง" v-model="detail" />
+            <v-text-field
+              label="รายละเอียดการจอง"
+              v-model="detail"
+              :rules="[required]"
+            />
             <v-row>
               <v-col>
                 <v-date-picker
@@ -256,6 +260,9 @@ export default {
     this.isMounted = true;
   },
   methods: {
+    required(v) {
+      return !!v || "กรุณาระบุ";
+    },
     dateFormat(date) {
       return moment(date).format("ddd DD MMM");
     },

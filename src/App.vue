@@ -4,7 +4,7 @@
       <Calendar v-if="action == 'reserve'" />
       <Check v-if="action == 'check'" />
     </v-main>
-    <div style="font-size: 12px">v 1.4.1</div>
+    <div style="font-size: 12px">v 1.5.1</div>
   </v-app>
 </template>
 
@@ -54,7 +54,7 @@ export default {
     //     }
     //   });
 
-    // เปิดเวลา on เครื่องจริง
+    // เปิดเวลา on เครื่องจริง Start
     await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     await this.$liff.ready;
     if (!this.$liff.isLoggedIn()) {
@@ -70,6 +70,8 @@ export default {
         console.log("error", err);
         this.isMounted = true;
       });
+
+    // เปิดเวลา on เครื่องจริง End
 
     const params = new URLSearchParams(queryString);
     const action = params.get("action");

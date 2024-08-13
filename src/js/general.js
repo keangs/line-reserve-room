@@ -52,6 +52,27 @@ export function getRoom(room = "") {
         { src: require("../image/room-i-3.jpg") },
       ],
     },
+    {
+      room: 5,
+      name: "E",
+      color: "teal",
+      seat: 2,
+      image: [{ src: require("../image/room-e-1.jpg") }],
+    },
+    {
+      room: 6,
+      name: "S",
+      color: "brown",
+      seat: 4,
+      image: [{ src: require("../image/room-s-1.jpg") }],
+    },
+    {
+      room: 7,
+      name: "G",
+      color: "indigo",
+      seat: 2,
+      image: [{ src: require("../image/room-g-1.jpg") }],
+    },
   ];
 
   if ([undefined, ""].includes(room)) return roomItems;

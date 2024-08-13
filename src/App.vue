@@ -54,22 +54,24 @@ export default {
     //     }
     //   });
 
-    // เปิดเวลา on เครื่องจริง
-    await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
-    await this.$liff.ready;
-    if (!this.$liff.isLoggedIn()) {
-      await this.$liff.login();
-    }
-    await this.$liff
-      .getProfile()
-      .then((profile) => {
-        this.$store.state.profile = profile;
-        this.isMounted = true;
-      })
-      .catch((err) => {
-        console.log("error", err);
-        this.isMounted = true;
-      });
+    // เปิดเวลา on เครื่องจริง Start
+    // await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
+    // await this.$liff.ready;
+    // if (!this.$liff.isLoggedIn()) {
+    //   await this.$liff.login();
+    // }
+    // await this.$liff
+    //   .getProfile()
+    //   .then((profile) => {
+    //     this.$store.state.profile = profile;
+    //     this.isMounted = true;
+    //   })
+    //   .catch((err) => {
+    //     console.log("error", err);
+    //     this.isMounted = true;
+    //   });
+
+    // เปิดเวลา on เครื่องจริง End
 
     const params = new URLSearchParams(queryString);
     const action = params.get("action");

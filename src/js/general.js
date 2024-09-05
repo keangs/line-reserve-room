@@ -73,6 +73,13 @@ export function getRoom(room = "") {
       seat: 2,
       image: [{ src: require("../image/room-g-1.jpg") }],
     },
+    {
+      room: 8,
+      name: "WS",
+      color: "cyan",
+      seat: 18,
+      image: [],
+    },
   ];
 
   if ([undefined, ""].includes(room)) return roomItems;
@@ -83,7 +90,7 @@ export function getRoom(room = "") {
 }
 export function displayDate(timestamp, showDate = true, showTime = true) {
   if (timestamp == undefined) return;
-  var cDate = new Date(timestamp);
+  let cDate = new Date(timestamp);
   cDate = new Date(
     cDate.getFullYear(),
     cDate.getMonth(),
@@ -122,7 +129,7 @@ export function displayDate(timestamp, showDate = true, showTime = true) {
 
 export function getThaiMonth(month) {
   if (Number(month) < 1 && Number(month) > 12) return "";
-  var monthNamesThai = [
+  let monthNamesThai = [
     "มกราคม",
     "กุมภาพันธ์",
     "มีนาคม",
@@ -140,12 +147,12 @@ export function getThaiMonth(month) {
 }
 
 export function convertToTimestamp(strDate) {
-  var datum = Date.parse(strDate);
+  let datum = Date.parse(strDate);
   return datum / 1000;
 }
 
 export function convertToDate(date, time) {
-  var dateString = date + " " + time,
+  let dateString = date + " " + time,
     dateTimeParts = dateString.split(" "),
     timeParts = dateTimeParts[1].split(":"),
     dateParts = dateTimeParts[0].split("-");

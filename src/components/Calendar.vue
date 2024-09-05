@@ -219,7 +219,7 @@
 import * as general from "@/js/general.js";
 import moment from "moment";
 import Swal from "sweetalert2";
-import { sendMsg } from "@/js/line";
+import { sendMsg, sendMsgNotify } from "@/js/line";
 import { getEvent, deleteReserve } from "@/js/firebase.js";
 // import vConsole from "@/js/vconsole.min.js";
 // new vConsole();
@@ -296,11 +296,11 @@ export default {
       });
       let inTime = 0;
       cReserve.forEach((item) => {
-        var checkTimeStart = new Date(item.start).getTime();
-        var checkTimeEnd = new Date(item.end).getTime();
+        let checkTimeStart = new Date(item.start).getTime();
+        let checkTimeEnd = new Date(item.end).getTime();
 
         let arrayTime = timeStart.split(":");
-        var reserveTimeStart = new Date(
+        let reserveTimeStart = new Date(
           year,
           month,
           day,
@@ -309,7 +309,7 @@ export default {
         ).getTime();
 
         arrayTime = timeEnd.split(":");
-        var reserveTimeEnd = new Date(
+        let reserveTimeEnd = new Date(
           year,
           month,
           day,
@@ -318,20 +318,35 @@ export default {
         ).getTime();
 
         if (
-          Math.min(checkTimeStart, checkTimeEnd) <=
+          Math.min(checkTimeStart, checkTimeEnd) <
             Math.max(reserveTimeStart, reserveTimeEnd) &&
-          Math.max(checkTimeStart, checkTimeEnd) >=
+          Math.max(checkTimeStart, checkTimeEnd) >
             Math.min(reserveTimeStart, reserveTimeEnd)
         ) {
           inTime = true;
           return false;
         }
       });
-      if (inTime) return false;
-      return true;
+      return !inTime;
     },
     async deleteItem(n) {
       deleteReserve(this.$liff, n, this.$store.state.reserveRef);
+
+      if (n.name == "WS") {
+        let period = `วันที่: ${general.displayDate(
+          n.start,
+          true,
+          false
+        )}\nเวลา: ${general.displayDate(
+          n.start,
+          false,
+          true
+        )} - ${general.displayDate(n.end, false, true)}`;
+        let msg = `
+ยกเลิกการจองใช้ ${n.name} ชั้น 8
+`;
+        sendMsgNotify(this.$liff, `${msg}${period}`);
+      }
       this.events = await getEvent(this.$store.state.reserveRef);
     },
     async addReserve() {
@@ -353,6 +368,17 @@ export default {
         return;
       }
 
+      if (this.dates.length == 0) {
+        Swal.fire({
+          title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
+          text: "กรุณาระบุวันที่อย่างน้อย 1 วัน",
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+        });
+        return;
+      }
+
+      let room = general.getRoom(this.roomSelected.room);
       for (const item of this.dates) {
         this.dateStart = moment(item);
         const parsedDate = moment(item, "YYYYMMDD");
@@ -371,7 +397,7 @@ export default {
           Swal.fire({
             title: "ไม่สามารถจองช่วงเวลาที่ระบุได้",
             html: `
-            ห้องประชุม: ${general.getRoom(this.roomSelected.room).name}<br/>
+            ห้องประชุม: ${room.name}<br/>
             วันที่: ${parsedDate.format("DD MMMM")} ${
               Number(parsedDate.format("YYYY")) + 543
             }<br/>
@@ -384,9 +410,8 @@ export default {
         }
       }
 
-      let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${
-        general.getRoom(this.roomSelected.room).name
-      }\n`;
+      let msg = `จองห้องประชุมเรียบร้อยแล้ว\nห้องประชุม: ${room.name}\n`;
+      let period = "";
       for (const [idx, item] of this.dates.entries()) {
         this.dateStart = moment(item);
         const parsedDate = moment(item, "YYYYMMDD");
@@ -402,8 +427,6 @@ export default {
           this.timeEnd
         );
 
-        let room = general.getRoom(this.roomSelected.room);
-
         this.$store.state.reserveRef.push({
           userId: this.$store.state.profile.userId,
           userName: this.$store.state.profile.displayName,
@@ -415,7 +438,7 @@ export default {
           timed: true,
         });
 
-        msg += `วันที่: ${general.displayDate(
+        period += `วันที่: ${general.displayDate(
           start,
           true,
           false
@@ -425,12 +448,20 @@ export default {
           true
         )} - ${general.displayDate(end, false, true)}`;
         if (idx != this.dates.length - 1) {
-          msg += "\n";
+          period += "\n";
         }
       }
 
       if (this.$liff.isInClient()) {
-        sendMsg(this.$liff, msg);
+        sendMsg(this.$liff, `${msg}${period}`);
+      }
+
+      if (room.name == "WS") {
+        msg = `
+มีการจองใช้ ${room.name} ชั้น 8
+เพื่อทำกิจกรรม ${this.detail.trim()}
+`;
+        sendMsgNotify(this.$liff, `${msg}${period}`);
       }
 
       this.events = await getEvent(this.$store.state.reserveRef);

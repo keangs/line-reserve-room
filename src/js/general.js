@@ -78,7 +78,10 @@ export function getRoom(room = "") {
       name: "WS",
       color: "cyan",
       seat: 18,
-      image: [],
+      image: [
+        { src: require("../image/room-ws-1.jpg") },
+        { src: require("../image/room-ws-2.jpg") },
+      ],
     },
   ];
 

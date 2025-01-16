@@ -41,29 +41,29 @@ export default {
   props: {
     change: {
       type: Function,
-      default: () => 1
+      default: () => 1,
     },
     value: {
       type: String,
-      default: ""
+      default: "",
     },
     label: {
       type: String,
-      default: "เวลา"
+      default: "เวลา",
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       rules: {
-        required: value => !!value || "Required."
+        required: (value) => !!value || "Required.",
       },
       time: null,
       menu: false,
-      modal: false
+      modal: false,
     };
   },
   watch: {
@@ -72,12 +72,12 @@ export default {
     },
     time() {
       this.$emit("update:value", this.time);
-    }
+    },
   },
   created() {
     if (!this.value) return null;
     this.time = this.value;
-  }
+  },
 };
 </script>
 

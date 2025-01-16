@@ -54,6 +54,12 @@ export default {
     //     }
     //   });
 
+    // เป็น เอ๋
+    // this.$store.state.profile = {
+    //   userId: "Ud0cb4d3daa3f917e00ed64075f592725",
+    //   displayName: "เอ๋ : Boosaya",
+    // };
+
     // เปิดเวลา on เครื่องจริง Start
     await this.$liff.init({ liffId: process.env.VUE_APP_LIFF_ID });
     await this.$liff.ready;

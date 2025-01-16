@@ -169,9 +169,16 @@
               label="รายละเอียดการจอง"
               v-model="detail"
               :rules="[required]"
+              hide-details="auto"
             />
+            <v-col align="right" class="px-0">
+              <v-btn small text @click="showRecurring()">
+                <v-icon>mdi-autorenew</v-icon> Make Recurring
+              </v-btn>
+            </v-col>
             <v-row>
               <v-col>
+                <!-- {{ dates }} -->
                 <v-date-picker
                   v-model="dates"
                   multiple
@@ -192,17 +199,24 @@
             </v-row> -->
             <!-- <TimePicker label="เวลาเริ่มต้น" :value.sync="timeStart" />
             <TimePicker label="เวลาสิ้นสุด" :value.sync="timeEnd" /> -->
-            <v-digital-time-picker
-              label="เวลาเริ่มต้น"
-              v-model="timeStart"
-              append-icon="mdi-clock-time-four-outline"
-            />
-            <v-digital-time-picker
-              label="เวลาสิ้นสุด"
-              v-model="timeEnd"
-              append-icon="mdi-clock-time-four-outline"
-            />
+            <div class="py-1">
+              <v-digital-time-picker
+                label="เวลาเริ่มต้น"
+                v-model="timeStart"
+                append-icon="mdi-clock-time-four-outline"
+                hide-details="auto"
+              />
+            </div>
+            <div class="pt-1">
+              <v-digital-time-picker
+                label="เวลาสิ้นสุด"
+                v-model="timeEnd"
+                append-icon="mdi-clock-time-four-outline"
+                hide-details="auto"
+              />
+            </div>
           </v-form>
+          <v-divider class="pb-3"></v-divider>
           <v-btn color="error" class="mr-4" @click="dialogDate = false">
             Cancel
           </v-btn>
@@ -211,6 +225,211 @@
           </v-btn>
         </v-container>
       </v-card>
+    </v-dialog>
+
+    <v-dialog persistent v-model="dialogRecurring" max-width="600">
+      <v-form ref="formRecurring">
+        <v-card>
+          <v-toolbar color="primary" dark>รูปแบบการจอง</v-toolbar>
+          <v-card-text>
+            <v-row>
+              <v-col>
+                <v-select
+                  label=""
+                  :items="recurring.items"
+                  v-model="recurring.selected"
+                  hide-details="auto"
+                  @change="clearRecurring('RecurringSelected')"
+                />
+              </v-col>
+            </v-row>
+
+            <div v-if="recurring.selected == 'Daily'">
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    label="ทุก ๆ"
+                    suffix="วัน"
+                    v-model="recurring.day.amount"
+                    hide-details="auto"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+
+            <div v-if="recurring.selected == 'Weekly'">
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    label="ทุก ๆ"
+                    suffix="สัปดาห์"
+                    v-model="recurring.week.amount"
+                    hide-details="auto"
+                  />
+                </v-col>
+              </v-row>
+
+              <v-row class="pb-4">
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="1"
+                    label="จันทร์"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="2"
+                    label="อังคาร"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="3"
+                    label="พุธ"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="4"
+                    label="พฤหัสบดี"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="5"
+                    label="ศุกร์"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="6"
+                    label="เสาร์"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col class="py-0" sm="3">
+                  <v-checkbox
+                    v-model="recurring.week.selected"
+                    value="7"
+                    label="อาทิตย์"
+                    hide-details="auto"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+
+            <div v-if="recurring.selected == 'Monthly'">
+              <v-radio-group
+                v-model="recurring.month.selected"
+                @change="clearRecurring('Monthly')"
+              >
+                <v-row class="align-end">
+                  <v-col sm="4">
+                    <v-radio label="ทุกวันที่ของเดือน" :value="1" />
+                  </v-col>
+                  <v-col sm="3">
+                    <v-text-field
+                      label="วันที่"
+                      hide-details="auto"
+                      v-model="recurring.month.days"
+                      :disabled="recurring.month.selected != 1"
+                      max="2"
+                    />
+                  </v-col>
+                  <v-col sm="4">
+                    <v-text-field
+                      label="ทุก ๆ"
+                      hide-details="auto"
+                      suffix="เดือน"
+                      v-model="recurring.month.months"
+                      :disabled="recurring.month.selected != 1"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row class="align-end">
+                  <v-col sm="4">
+                    <v-radio label="ทุกวันของเดือน" :value="2" />
+                  </v-col>
+                  <v-col sm="3">
+                    <v-select
+                      label="วัน"
+                      :items="recurring.month.dayItems"
+                      v-model="recurring.month.daySelected"
+                      hide-details="auto"
+                      :disabled="recurring.month.selected != 2"
+                    />
+                  </v-col>
+                  <v-col sm="3">
+                    <v-select
+                      label="สัปดาห์"
+                      :items="recurring.month.weekItems"
+                      v-model="recurring.month.weekSelected"
+                      hide-details="auto"
+                      :disabled="recurring.month.selected != 2"
+                    />
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col offset-sm="4" sm="3">
+                    <v-text-field
+                      label="ทุก ๆ"
+                      hide-details="auto"
+                      suffix="เดือน"
+                      v-model="recurring.month.weekMonth"
+                      :disabled="recurring.month.selected != 2"
+                    />
+                  </v-col>
+                </v-row>
+              </v-radio-group>
+            </div>
+
+            <v-row>
+              <v-col>
+                <v-divider></v-divider>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="pt-0">
+                <DatePicker
+                  label="ตั้งแต่วันที่"
+                  hide-details="auto"
+                  :rules="[required]"
+                  :value.sync="recurring.date.startDate"
+                />
+              </v-col>
+              <v-col class="pt-0">
+                <DatePicker
+                  label="ถึงวันที่"
+                  hide-details="auto"
+                  :value.sync="recurring.date.end.endDate"
+                  :rules="[required]"
+                  :disabled="recurring.date.end.selected != 1"
+                />
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions class="justify-center">
+            <v-btn color="error" @click="dialogRecurring = false">
+              Cancel
+            </v-btn>
+            <v-btn color="primary" class="mr-4" @click="addRecurring()">
+              Ok
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
     </v-dialog>
   </div>
 </template>
@@ -248,6 +467,44 @@ export default {
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
+    dialogRecurring: false,
+    recurring: {
+      selected: "Daily",
+      items: ["Daily", "Weekly", "Monthly"],
+      day: {
+        amount: 1,
+      },
+      week: {
+        amount: 1,
+        selected: [],
+      },
+      month: {
+        days: 1,
+        months: 1,
+        selected: 1,
+        weekItems: ["แรก", "ที่สอง", "ที่สาม", "ที่สี่", "สุดท้าย"],
+        dayItems: [
+          "จันทร์",
+          "อังคาร",
+          "พุธ",
+          "พฤหัสบดี",
+          "ศุกร์",
+          "เสาร์",
+          "อาทิตย์",
+        ],
+        weekSelected: "",
+        daySelected: "",
+        weekMonth: 1,
+      },
+      date: {
+        startDate: 0,
+        end: {
+          selected: 1,
+          endDate: 0,
+          amount: 0, //เอาไว้รองรับจำนวนครั้งแต่ยังทำไม่เสร็จ
+        },
+      },
+    },
     events: [],
   }),
   computed: {},
@@ -260,6 +517,111 @@ export default {
     this.isMounted = true;
   },
   methods: {
+    addRecurring() {
+      if (!this.$refs.formRecurring.validate()) {
+        return;
+      }
+      if (this.recurring.selected == "Daily") {
+        this.dates = general.generateDateRange(
+          1,
+          this.recurring.date.startDate,
+          this.recurring.date.end.endDate,
+          this.recurring.day.amount
+        );
+        this.dialogRecurring = false;
+      }
+
+      if (this.recurring.selected == "Weekly") {
+        this.dates = general.generateDateRange(
+          2,
+          this.recurring.date.startDate,
+          this.recurring.date.end.endDate,
+          this.recurring.week.amount,
+          this.recurring.week.selected
+        );
+        this.dialogRecurring = false;
+      }
+      if (this.recurring.selected == "Monthly") {
+        if (this.recurring.month.selected == 1) {
+          this.dates = general.generateDateRange(
+            3,
+            this.recurring.date.startDate,
+            this.recurring.date.end.endDate,
+            this.recurring.month.months,
+            [],
+            this.recurring.month.days
+          );
+        } else if (this.recurring.month.selected == 2) {
+          this.dates = general.generateDateRange(
+            4,
+            this.recurring.date.startDate,
+            this.recurring.date.end.endDate,
+            this.recurring.month.weekMonth,
+            [this.recurring.month.daySelected],
+            0,
+            [this.recurring.month.weekSelected]
+          );
+        }
+
+        this.dialogRecurring = false;
+      }
+    },
+    showRecurring() {
+      this.clearRecurring();
+      this.dialogRecurring = true;
+    },
+    clearRecurring(selected) {
+      if (this.$refs.formRecurring) {
+        this.$refs.formRecurring.resetValidation();
+      }
+      switch (selected) {
+        case "Daily":
+          this.recurring.day.amount = 1;
+          break;
+        case "Weekly":
+          this.recurring.week.amount = 1;
+          this.recurring.week.selected = [];
+          break;
+        case "Monthly":
+          this.recurring.month.days = 1;
+          this.recurring.month.months = 1;
+          this.recurring.month.weekMonth = 1;
+          this.recurring.month.weekSelected = "";
+          break;
+        case "End":
+          this.recurring.date.end.endDate = 0;
+          this.recurring.date.end.amount = 0;
+          break;
+        case "RecurringSelected":
+          this.recurring.day.amount = 1;
+          this.recurring.week.amount = 1;
+          this.recurring.week.selected = [];
+          this.recurring.month.amount = 1;
+          this.recurring.month.selected = 1;
+          this.recurring.month.weekSelected = "";
+          this.recurring.month.weekMonth = 1;
+          break;
+        default:
+          this.recurring.selected = "Daily";
+          this.recurring.day.amount = 1;
+          this.recurring.week.amount = 1;
+          this.recurring.week.selected = [];
+          this.recurring.month.amount = 1;
+          this.recurring.month.selected = 1;
+          this.recurring.month.weekSelected = "";
+          this.recurring.month.weekMonth = 1;
+          this.recurring.date.end.selected = 1;
+          this.recurring.date.end.endDate = 0;
+          this.recurring.date.end.amount = 0;
+
+          const date = moment();
+          const buddhistYear = date.year() + 543;
+          const formattedDate = `${buddhistYear}${date.format("MMDD")}`;
+
+          this.recurring.date.startDate = Number(formattedDate);
+          break;
+      }
+    },
     required(v) {
       return !!v || "กรุณาระบุ";
     },

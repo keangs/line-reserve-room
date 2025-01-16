@@ -15,8 +15,10 @@
         readonly
         v-bind="attrs"
         :disabled="disabled"
+        :hide-details="hideDetails"
         v-on="on"
         @change="change"
+        :rules="rules"
       />
     </template>
     <v-date-picker v-model="date" locale="th" @input="menu = false" />
@@ -41,6 +43,16 @@ export default {
     disabled: {
       type: Boolean,
       default: false,
+    },
+    hideDetails: {
+      type: String,
+      default: "",
+    },
+    rules: {
+      type: Array,
+      default: () => {
+        return [];
+      },
     },
   },
   data: (vm) => ({
